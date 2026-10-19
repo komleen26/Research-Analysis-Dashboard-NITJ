@@ -3,10 +3,8 @@ import pandas as pd
 import plotly.express as px
 import numpy as np
 
-#  cd C:\Users\harpr\OneDrive\Desktop\ProjectDashboard
-#  python -m streamlit run app.py
 
-# --- PAGE CONFIGURATION ---
+# PAGE CONFIGURATION 
 st.set_page_config(
     page_title="Research Analytics Hub",
     page_icon="📊",
@@ -14,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- CUSTOM CSS FOR LARGER TABS ---
+# css
 st.markdown("""
 <style>
     /* Increase font size of tab labels */
@@ -29,7 +27,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- HELPER: INDIAN CURRENCY FORMATTER ---
+# INDIAN CURRENCY FORMATTER 
 def format_inr(number):
     try:
         s, *d = str(int(number)).partition(".")
@@ -38,7 +36,7 @@ def format_inr(number):
     except:
         return f"₹ {number}"
 
-# --- HELPER: CUSTOM KNN (FIND SIMILAR PROJECTS) ---
+# CUSTOM KNN
 def get_similar_projects(target_project_name, df, top_n=3):
     target = df[df['Name of Project'] == target_project_name].iloc[0]
     others = df[df['Name of Project'] != target_project_name].copy()
@@ -151,7 +149,7 @@ st.markdown("---")
 # --- TABS LAYOUT ---
 tab1, tab2, tab3, tab4 = st.tabs(["Overview", "Raw Data", "Smart Conclusions", "KNN Analysis"])
 
-# === TAB 1: VISUALIZATIONS ===
+#  TAB 1: VISUALIZATIONS 
 with tab1:
     k1, k2, k3, k4 = st.columns(4)
     total_funding = filtered_df['Amount'].sum()
@@ -179,7 +177,7 @@ with tab1:
             text_auto='.2s', 
             color='Amount', 
             color_continuous_scale='Blues',
-            # Use Formatted Amount in Hover
+           
             hover_data={'Amount': False, 'Formatted_Amount': True, 'Department': True}
         )
         fig_bar.update_layout(xaxis_title="Amount (INR)", yaxis_title=None, height=600, transition_duration=500)
@@ -204,14 +202,14 @@ with tab1:
             y='Amount', 
             size='Amount', 
             color='Department',
-            # Custom Hover Data with Formatted Money
+          
             hover_data={
                 'Name of Project': True, 
                 'Start_Str': True, 
                 'End_Str': True, 
                 'Duration_Days': True, 
-                'Amount': False,           # Hide raw number
-                'Formatted_Amount': True   # Show readable number
+                'Amount': False,           
+                'Formatted_Amount': True   
             },
             labels={'Duration_Days': 'Days', 'Amount': 'Funding (INR)', 'Start_Str': 'Start', 'End_Str': 'End', 'Formatted_Amount': 'Value'},
             title="Correlation: Project Duration vs Funding"
@@ -228,14 +226,14 @@ with tab1:
         agency_data.columns = ['Funding Agency', 'Number of Projects']
         st.dataframe(agency_data, use_container_width=True, height=400)
 
-# === TAB 2: RAW DATA ===
+# TAB 2: RAW DATA 
 with tab2:
     st.subheader("Project Database")
     st.dataframe(filtered_df, height=600)
     csv = filtered_df.to_csv(index=False).encode('utf-8')
     st.download_button("Download CSV", csv, "research_data.csv", "text/csv")
 
-# === TAB 3: SMART CONCLUSIONS ===
+# TAB 3: SMART CONCLUSIONS 
 with tab3:
     st.header("Executive Summary & Strategic Insights")
     if filtered_df.empty:
